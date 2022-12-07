@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,12 +11,50 @@
         <input type="text", name="userinput"><br><br>
         <input type="submit", value="Answer">
     </form>
-    <!-- <p>{{data}}</p> -->
     <div class="results">
         <pre>{{ jsonfile }}</pre>
     </div>
-    {% for key,value in {jsonfile}.items()%}
-        {% print(key,value) %}
-    {% endfor %}
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Stark</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+</head>
+<body class="align">
+
+    <h3>Winter is coming!!</h3>
+  
+    <form method="POST">
+      <div class="form__field">
+        <input type="text" class="form__input" pattern=".{6,}" name="userinput" required>
+        <span class="icon"></span>
+      </div>
+      <input type="submit", value="Answer" class="answer_button">
+    </form>
+    {% block body %}
+    <ul>
+        {% for key,value in data.items() %}
+            <strong>{{key}}</strong>
+            {% if key=='Answer' %}
+            <li>{{value['answer']}}</li>
+            <strong>Confidence Level</strong>
+            <li>{{value['score']}} %</li>
+            {% else %}
+            <li>{{value}}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endblock %}
+  
+    <p>Type in your question and hit the Answer button</p>
+  
+  </body>
+  
+  
 </html>

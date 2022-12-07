@@ -32,10 +32,12 @@ def answer_question():
         question = request.form['userinput']
         answer = qa_model(question=question,context=full_text)
         response = {"Context":full_text,"Question":question,"Answer":answer}
+        response['Answer']['score'] = round(response['Answer']['score']*100,2)
+        print(response)
         # response = json.dumps(response, sort_keys = True, indent = 4, separators = (',', ': '))
-        return render_template("user_input.html",jsonfile=json.dumps(response))
+        return render_template("user_input.html",data=response)
     
-    return render_template("user_input.html")
+    return render_template("user_input.html",data={})
 
 
 if __name__=="__main__":
