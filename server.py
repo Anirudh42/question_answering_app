@@ -1,9 +1,13 @@
 from flask import Flask, request, render_template
 from transformers import pipeline
-import json
+import json, pickle
+from gensim.utils import tokenize
 
 
 app = Flask(__name__)
+
+#Preparing the pretrained QA model
+print("Loading the QA model...")
 my_context = []
 with open("./data/my_context.txt",encoding="utf8") as f:
     for line in f.readlines():
@@ -11,23 +15,29 @@ with open("./data/my_context.txt",encoding="utf8") as f:
 
 full_text = ' '.join(my_context)
 qa_model = pipeline("question-answering")
-
+#Preparing the pretrained Sentiment Analysis Model
+print("Loading the Sentiment Analysis model...")
+with open('ml_model/sentiment_model.pk','rb') as f:
+    sentiment_predictor = pickle.load(f)
+with open('ml_model/featurizer.pk','rb') as f:
+    vectorizer = pickle.load(f)
 
 @app.route("/")
 def welcome():
     return "Welcome Brave Warriors! Learn about Game of Thrones by asking questions"
 
+@app.route("/sentiment",methods=["GET","POST"])
+def predict_sentiment():
+    if request.method=="POST":
+        input_text = request.form['userinput']
+        cleaned_text = [' '.join(list(tokenize(input_text,lowercase=True)))]
+        vectorized_text = vectorizer.transform(cleaned_text)
+        prediction = sentiment_predictor.predict(vectorized_text)[0]
+        response = {"Text":input_text,"Sentiment":"Positive" if prediction==1 else "Negative"}
+    return render_template("user_input.html",data=response)
 
 @app.route("/qa",methods=["GET","POST"])
 def answer_question():
-    # if request.method=="GET":
-    #     # question1 = "What is Westeros?"
-    #     # question2 = "Who is Night's watch?"
-    #     # context = full_text
-    #     # answer1 = qa_model(question = question1, context = context)
-    #     # answer2 = qa_model(question = question2, context = context)
-    #     # response = [{"Question":question1,"Answer":answer1},{"Question":question2,"Answer":answer2}]
-    #     return json.dumps(response)
     if request.method=="POST":
         question = request.form['userinput']
         answer = qa_model(question=question,context=full_text)

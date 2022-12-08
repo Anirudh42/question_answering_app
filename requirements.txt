@@ -1,2 +1,4 @@
 flask
 transformers
+gensim
+scikit-learn
