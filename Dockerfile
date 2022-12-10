@@ -8,6 +8,6 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 # Next two steps are equivalent to saying "python app.py" in your terminal
 ENTRYPOINT ["python"]
-CMD ["app.py"]
+CMD ["server.py"]
 # Exposing a certain container_port so that you can port forward when the app is deployed
 EXPOSE 8080

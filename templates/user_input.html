@@ -37,6 +37,7 @@
       </div>
       <input type="submit", value="Predict" class="answer_button">
     </form>
+    <img src="{{ url_for('static',filename='img/brave_logo.jpeg') }}" alt="" id="brave_logo">
     {% block body %}
     <ul>
         {% for key,value in data.items() %}

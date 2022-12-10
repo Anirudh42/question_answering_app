@@ -34,7 +34,8 @@ def predict_sentiment():
         vectorized_text = vectorizer.transform(cleaned_text)
         prediction = sentiment_predictor.predict(vectorized_text)[0]
         response = {"Text":input_text,"Sentiment":"Positive" if prediction==1 else "Negative"}
-    return render_template("user_input.html",data=response)
+        return render_template("user_input.html",data=response)
+    return render_template("user_input.html",data={})
 
 @app.route("/qa",methods=["GET","POST"])
 def answer_question():
@@ -51,4 +52,4 @@ def answer_question():
 
 
 if __name__=="__main__":
-    app.run(port=5000,debug=True)
+    app.run(host="127.0.0.1",port=5000,debug=True)
