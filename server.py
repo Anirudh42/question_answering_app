@@ -9,18 +9,14 @@ app = Flask(__name__)
 #Preparing the pretrained QA model
 print("Loading the QA model...")
 my_context = []
-with open("./data/my_context.txt",encoding="utf8") as f:
-    for line in f.readlines():
-        my_context.append(line.replace("\n",""))
+'read the contents of the text file to set the context for the QA model'
 
 full_text = ' '.join(my_context)
-qa_model = pipeline("question-answering")
+qa_model = 'initialize the QA model'
 #Preparing the pretrained Sentiment Analysis Model
 print("Loading the Sentiment Analysis model...")
-with open('ml_model/sentiment_model.pk','rb') as f:
-    sentiment_predictor = pickle.load(f)
-with open('ml_model/featurizer.pk','rb') as f:
-    vectorizer = pickle.load(f)
+'load the sentiment analysis ML model'
+'load the vectorizer for the above ML model'
 
 @app.route("/")
 def welcome():
@@ -29,27 +25,26 @@ def welcome():
 @app.route("/sentiment",methods=["GET","POST"])
 def predict_sentiment():
     if request.method=="POST":
-        input_text = request.form['userinput']
-        cleaned_text = [' '.join(list(tokenize(input_text,lowercase=True)))]
-        vectorized_text = vectorizer.transform(cleaned_text)
-        prediction = sentiment_predictor.predict(vectorized_text)[0]
-        response = {"Text":input_text,"Sentiment":"Positive" if prediction==1 else "Negative"}
-        return render_template("user_input.html",data=response)
-    return render_template("user_input.html",data={})
+        input_text = 'Get input from web interface'
+        cleaned_text = 'perform some basic text cleaning'
+        vectorized_text = 'convert text into numbers'
+        prediction = 'use the ML model to make a prediction on the sentiment'
+        response = 'formulate the response as a JSON object'
+        return 'display result and render on screen'
+    return 'render the html file'
 
 @app.route("/qa",methods=["GET","POST"])
 def answer_question():
     if request.method=="POST":
-        question = request.form['userinput']
-        answer = qa_model(question=question,context=full_text)
-        response = {"Context":full_text,"Question":question,"Answer":answer}
+        question = 'Get input from web interface'
+        answer = 'get the answer from the QA model'
+        response = 'formulate the response as a JSON object'
         response['Answer']['score'] = round(response['Answer']['score']*100,2)
-        print(response)
         # response = json.dumps(response, sort_keys = True, indent = 4, separators = (',', ': '))
-        return render_template("user_input.html",data=response)
+        return 'display result and render on screen'
     
-    return render_template("user_input.html",data={})
+    return 'render the html file'
 
 
 if __name__=="__main__":
-    app.run(host="127.0.0.1",port=5000,debug=True)
+    'command to run the Flask application here'
