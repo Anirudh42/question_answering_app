@@ -46,14 +46,15 @@ def predict_sentiment():
 @app.route("/qa",methods=["GET","POST"])
 def answer_question():
     if request.method=="POST":
-        question = 'Get input from web interface'
-        answer = 'get the answer from the QA model'
-        response = 'formulate the response as a JSON object'
+        question = request.form['userinput']
+        answer = qa_model(question = question, context = my_context)
+        response = ["Question": question, "Response": answer]
         response['Answer']['score'] = round(response['Answer']['score']*100,2)
         # response = json.dumps(response, sort_keys = True, indent = 4, separators = (',', ': '))
-        return 'display result and render on screen'
+        return render_template("user_input.html", data=response)
     
-    return 'render the html file'
+    return render_template("user_input.html", data=())
+    
 
 
 if __name__=="__main__":
