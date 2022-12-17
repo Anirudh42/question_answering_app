@@ -39,7 +39,7 @@ def predict_sentiment():
         cleaned_text = [' '.join(list(tokenize(input_text, lowercase=True)))]
         vectorized_text = vectorizer.transform(cleaned_text)
         prediction = sentiment_predictor.predict(vectorized_text)[0]
-        response = ["Text": input_text, "Sentiment": "Positive" if prediction = 1 else "Negative"]
+        response = {"Text": input_text, "Sentiment": "Positive" if prediction == 1 else "Negative"}
         return render_template("user_input.html", data=response)
     return render_template("user_input.html", data=())
 
