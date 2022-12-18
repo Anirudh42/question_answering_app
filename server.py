@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from transformers import pipeline
+# from transformers import pipeline
 import json, pickle
 from gensim.utils import tokenize
 
@@ -7,16 +7,21 @@ from gensim.utils import tokenize
 app = Flask(__name__)
 
 #Preparing the pretrained QA model
-print("Loading the QA model...")
-my_context = []
-'read the contents of the text file to set the context for the QA model'
+# print("Loading the QA model...")
+# my_context = []
+# #Open the file, read every line in the file and append it to a list and make sure there are no '\n' 
+# with open("./data/my_context.txt",encoding="utf8") as f:
+#     for line in f.readlines():
+#         my_context.append(line.replace("\n",""))
 
-full_text = ' '.join(my_context)
-qa_model = 'initialize the QA model'
+# full_text = ' '.join(my_context)
+# qa_model = pipeline("question-answering") #initialize the qa model
 #Preparing the pretrained Sentiment Analysis Model
 print("Loading the Sentiment Analysis model...")
-'load the sentiment analysis ML model'
-'load the vectorizer for the above ML model'
+with open("ml_model/sentiment_model.pk",'rb') as f:
+    sentiment_predictor = pickle.load(f)
+with open("ml_model/featurizer.pk",'rb') as f:
+    vectorizer = pickle.load(f)
 
 @app.route("/")
 def welcome():
@@ -25,13 +30,13 @@ def welcome():
 @app.route("/sentiment",methods=["GET","POST"])
 def predict_sentiment():
     if request.method=="POST":
-        input_text = 'Get input from web interface'
-        cleaned_text = 'perform some basic text cleaning'
-        vectorized_text = 'convert text into numbers'
-        prediction = 'use the ML model to make a prediction on the sentiment'
-        response = 'formulate the response as a JSON object'
-        return 'display result and render on screen'
-    return 'render the html file'
+        input_text = request.form['userinput']
+        cleaned_text = [' '.join(list(tokenize(input_text,lowercase=True)))]
+        vectorized_text = vectorizer.transform(cleaned_text)
+        prediction = sentiment_predictor.predict(vectorized_text)[0]
+        response = {"Text":input_text,"Sentiment":"Positive" if prediction==1 else "Negative"}
+        return render_template("user_input.html",data=response)
+    return render_template("user_input.html",data={})
 
 @app.route("/qa",methods=["GET","POST"])
 def answer_question():
@@ -39,12 +44,14 @@ def answer_question():
         question = 'Get input from web interface'
         answer = 'get the answer from the QA model'
         response = 'formulate the response as a JSON object'
-        response['Answer']['score'] = round(response['Answer']['score']*100,2)
+        # response['Answer']['score'] = round(response['Answer']['score']*100,2)
         # response = json.dumps(response, sort_keys = True, indent = 4, separators = (',', ': '))
-        return 'display result and render on screen'
+        return 'WIP'
     
-    return 'render the html file'
+    return 'WIP'
 
 
 if __name__=="__main__":
-    'command to run the Flask application here'
+    app.run(
+        host="0.0.0.0",port=5000,debug=True
+    )
