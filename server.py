@@ -6,7 +6,7 @@ from gensim.utils import tokenize
 
 app = Flask(__name__)    # __name__ means this current file.
 
-Preparing the pretrained QA model
+#Preparing the pretrained QA model
 print("Loading the QA model...")
 my_context = []
 
@@ -20,10 +20,10 @@ qa_model = pipeline("question-answering") #'initialize the QA model'
 #Preparing the pretrained Sentiment Analysis Model
 print("Loading the Sentiment Analysis model...")
 #'load the sentiment analysis ML model'
-with open("./ml_model/sentiment_model.pk") as f:
+with open("./ml_model/sentiment_model.pk",'rb') as f:
     sentiment_model= pickle.load(f)    
 #'load the vectorizer for the above ML model' # featurizer convert text to numbers (hot-encode)
-with open("./ml_model/featurizer.pk") as f:
+with open("./ml_model/featurizer.pk",'rb') as f:
     vectorizer= pickle.load(f)
 
 @app.route("/")
